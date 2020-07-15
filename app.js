@@ -1,6 +1,6 @@
 const wordEl = document.getElementById("word");
 const wrongLettersEl = document.getElementById("wrong-letters");
-const playAgainBtn = document.getElementById("play-again");
+const playAgainBtn = document.getElementById("play-button");
 const popup = document.getElementById("popup-container");
 const notification = document.getElementById("notification-container");
 const finalMessage = document.getElementById("final-message");
@@ -37,7 +37,30 @@ function displayWord() {
 }
 
 //update the wrong letters
-function updateWrongLettersEl() {}
+function updateWrongLettersEl() {
+  //display wrong letters
+  wrongLettersEl.innerHTML = `
+        ${wrongLetters.length > 0 ? "<p>Wrong</p>" : ""}
+        ${wrongLetters.map((letter) => `<span>${letter}</span>`)}
+    `;
+
+  // display parts
+  figueParts.forEach((part, index) => {
+    const errors = wrongLetters.length;
+
+    if (index < errors) {
+      part.style.display = "block";
+    } else {
+      part.style.display = "none";
+    }
+  });
+
+  // display if lost
+  if (wrongLetters.length === figueParts.length) {
+    finalMessage.innerText = "Unfortunately you lost.";
+    popup.style.display = "flex";
+  }
+}
 
 // show notification
 function showNotification() {
@@ -69,6 +92,22 @@ window.addEventListener("keydown", (e) => {
       }
     }
   }
+});
+
+// restart the game and play again
+
+playAgainBtn.addEventListener("click", () => {
+  //empty arrays
+
+  correctLetters.splice(0);
+  wrongLetters.splice(0);
+
+  selectedWord = words[Math.floor(Math.random() * words.length)];
+
+  displayWord();
+  updateWrongLettersEl();
+
+  popup.style.display = "none";
 });
 
 displayWord();
